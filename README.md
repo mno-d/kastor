@@ -36,6 +36,16 @@ Requirements:
 - Bash. On Windows, Git Bash is enough.
 - A public HTTPS tunnel if ChatGPT needs to reach this PC
 
+Install from the current GitHub release:
+
+```bash
+npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.3/mnod-kastor-1.0.3.tgz
+kastor setup-guide
+kastor init
+kastor doctor
+kastor serve
+```
+
 From a clone:
 
 ```bash
