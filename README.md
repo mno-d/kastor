@@ -45,7 +45,7 @@ Requirements:
 Install from the current GitHub release:
 
 ```bash
-npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.3/mnod-kastor-1.0.3.tgz
+npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.4/mnod-kastor-1.0.4.tgz
 kastor setup-guide
 kastor init
 kastor doctor

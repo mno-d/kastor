@@ -1,6 +1,6 @@
 {
   "name": "@mnod/kastor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Codex-style local development harness for ChatGPT and other MCP clients.",
   "type": "module",
   "main": "dist/server.js",
@@ -27,7 +27,7 @@
     "build:app": "vite build",
     "dev": "node scripts/dev-server.mjs",
     "start": "node dist/cli.js serve",
-    "test": "tsx src/config.test.ts && tsx src/roots.test.ts && tsx src/skills.test.ts && tsx src/workspaces.test.ts && tsx src/review-checkpoints.test.ts && tsx src/oauth-store.test.ts && tsx src/codex-tools.test.ts && tsx src/task-plan.test.ts && tsx src/work-checkpoint.test.ts && tsx src/work-review.test.ts && tsx src/work-resume.test.ts && tsx src/work-delegate.test.ts && tsx src/work-summary.test.ts && tsx src/rule-check.test.ts && tsx src/computer-use.test.ts && tsx src/public-check.test.ts && tsx src/server-e2e.test.ts",
+    "test": "tsx src/config.test.ts && tsx src/roots.test.ts && tsx src/skills.test.ts && tsx src/workspaces.test.ts && tsx src/review-checkpoints.test.ts && tsx src/oauth-store.test.ts && tsx src/codex-tools.test.ts && tsx src/task-plan.test.ts && tsx src/work-checkpoint.test.ts && tsx src/work-review.test.ts && tsx src/work-resume.test.ts && tsx src/work-delegate.test.ts && tsx src/work-summary.test.ts && tsx src/rule-check.test.ts && tsx src/computer-use.test.ts && tsx src/public-check.test.ts && tsx src/server-e2e.test.ts && tsx src/chatgpt-connection-e2e.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "keywords": [],
