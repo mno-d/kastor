@@ -1,0 +1,66 @@
+{
+  "name": "kastor",
+  "version": "1.0.2",
+  "description": "Codex-style local development harness for ChatGPT and other MCP clients.",
+  "type": "module",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=20.12 <27"
+  },
+  "bin": {
+    "kastor": "dist/cli.js",
+    "devspace": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "scripts",
+    "README.md",
+    ".env.example"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "powershell -NoProfile -Command \"if (Test-Path -LiteralPath 'dist') { Remove-Item -LiteralPath 'dist' -Recurse -Force }\"",
+    "build": "npm run clean && npm run build:app && tsc -p tsconfig.build.json",
+    "build:app": "vite build",
+    "dev": "node scripts/dev-server.mjs",
+    "start": "node dist/cli.js serve",
+    "test": "tsx src/config.test.ts && tsx src/roots.test.ts && tsx src/skills.test.ts && tsx src/workspaces.test.ts && tsx src/review-checkpoints.test.ts && tsx src/oauth-store.test.ts && tsx src/codex-tools.test.ts && tsx src/task-plan.test.ts && tsx src/work-checkpoint.test.ts && tsx src/work-review.test.ts && tsx src/work-resume.test.ts && tsx src/work-delegate.test.ts && tsx src/work-summary.test.ts && tsx src/rule-check.test.ts && tsx src/computer-use.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^1.5.1",
+    "@earendil-works/pi-coding-agent": "^0.80.2",
+    "@modelcontextprotocol/ext-apps": "^1.7.2",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@pierre/diffs": "^1.2.5",
+    "better-sqlite3": "^12.10.0",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "semver": "^7.8.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@types/semver": "^7.7.1",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14"
+  },
+  "overrides": {
+    "protobufjs": "7.6.4",
+    "ws": "8.21.0"
+  }
+}
