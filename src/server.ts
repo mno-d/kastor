@@ -20,14 +20,12 @@ import {
 import express from "express";
 import type { Request, Response } from "express";
 import * as z from "zod/v4";
-import { computerUse } from "./computer-use.js";
 import { applyUnifiedPatch, gitCommit, gitDiff, gitPublish, gitStage, gitStatus, runChecks, selfTest, sizeTop } from "./codex-tools.js";
 import { loadConfig, type ServerConfig } from "./config.js";
 import {
   logEvent,
   requestIp,
   requestPath,
-  commandPreview,
   sessionIdPrefix,
 } from "./logger.js";
 import {
@@ -40,6 +38,7 @@ import {
   writeFileTool,
 } from "./pi-tools.js";
 import { SingleUserOAuthProvider } from "./oauth-provider.js";
+import { registerComputerUseTool } from "./register-computer-use-tool.js";
 import { createReviewCheckpointManager } from "./review-checkpoints.js";
 import { ruleCheck } from "./rule-check.js";
 import { formatPathForPrompt } from "./skills.js";
@@ -62,6 +61,16 @@ import {
   type ToolNames,
   WRITE_TOOL_ANNOTATIONS,
 } from "./server-tool-meta.js";
+import {
+  contentText,
+  imageBlock,
+  logFailedToolResponse,
+  logToolCall,
+  resultOutputSchema,
+  textBlock,
+  textSummary,
+  type ToolContent,
+} from "./server-tool-runtime.js";
 import { taskPlan, type TaskPlanInput } from "./task-plan.js";
 import { workCheckpoint } from "./work-checkpoint.js";
 import { workDelegate } from "./work-delegate.js";
@@ -81,36 +90,9 @@ interface RunningServer {
   close(): void;
 }
 
-type ToolContent =
-  | { type: "text"; text: string }
-  | { type: "image"; data: string; mimeType: string };
-
 interface DiffStats {
   additions: number;
   removals: number;
-}
-
-interface ToolLogFields {
-  tool: string;
-  workspaceId?: string;
-  path?: string;
-  workingDirectory?: string;
-  command?: string;
-  commandLength?: number;
-  success: boolean;
-  durationMs: number;
-  error?: string;
-}
-
-function resultOutputSchema(extra: z.ZodRawShape = {}): z.ZodRawShape {
-  return {
-    result: z
-      .string()
-      .describe(
-        "Model-readable result text for follow-up reasoning and plain MCP hosts.",
-      ),
-    ...extra,
-  };
 }
 
 const workspaceSkillOutputSchema = z.object({
@@ -163,64 +145,6 @@ function requestLogFields(req: Request, config: ServerConfig): Record<string, un
     origin: req.header("origin"),
     referer: req.header("referer"),
     contentLength: req.header("content-length"),
-  };
-}
-
-function logToolCall(config: ServerConfig, fields: ToolLogFields): void {
-  if (!config.logging.toolCalls) return;
-
-  const { command, ...safeFields } = fields;
-  logEvent(config.logging, fields.success ? "info" : "warn", "tool_call", {
-    ...safeFields,
-    commandPreview: config.logging.shellCommands && command ? commandPreview(command) : undefined,
-  });
-}
-
-function contentText(content: ToolContent[]): string {
-  return content
-    .filter(
-      (item): item is { type: "text"; text: string } => item.type === "text",
-    )
-    .map((item) => item.text)
-    .join("\n");
-}
-
-function toolErrorPreview(content: ToolContent[]): string | undefined {
-  const text = contentText(content).replace(/\s+/g, " ").trim();
-  if (!text) return undefined;
-  return text.length > 240 ? `${text.slice(0, 237)}...` : text;
-}
-
-function logFailedToolResponse(
-  config: ServerConfig,
-  fields: Omit<ToolLogFields, "success" | "durationMs" | "error">,
-  content: ToolContent[],
-  startedAt: number,
-): void {
-  logToolCall(config, {
-    ...fields,
-    success: false,
-    durationMs: Math.round(performance.now() - startedAt),
-    error: toolErrorPreview(content),
-  });
-}
-
-function textBlock(text: string): ToolContent {
-  return { type: "text", text };
-}
-
-function imageBlock(data: string, mimeType: string): ToolContent {
-  return { type: "image", data, mimeType };
-}
-
-function textSummary(content: ToolContent[]): {
-  lines: number;
-  characters: number;
-} {
-  const text = contentText(content);
-  return {
-    lines: text.length === 0 ? 0 : text.split("\n").length,
-    characters: text.length,
   };
 }
 
@@ -2270,161 +2194,7 @@ function createMcpServer(
     },
   );
 
-  registerAppTool(
-    server,
-    toolNames.computerUse,
-    {
-      title: "Computer Use",
-      description:
-        "Operate visible Windows apps when normal code, file, browser, or shell tools are insufficient. Supports list_windows, screenshot, activate, click, type_text, press_key, and launch_app. Use list_windows first, then pass a specific windowId. This tool blocks terminal apps, ChatGPT/Codex self-control, Windows-key shortcuts, security/privacy settings, authentication handoff tasks, and risky communication/destructive/permission/payment/install actions unless the user gave explicit action-time confirmation and confirmed=true is passed.",
-      inputSchema: {
-        action: z
-          .enum(["list_windows", "screenshot", "activate", "click", "type_text", "press_key", "launch_app"])
-          .describe("Computer Use action to perform."),
-        windowId: z
-          .number()
-          .optional()
-          .describe("Window id from list_windows. Required for screenshot, activate, click, type_text, and press_key."),
-        app: z
-          .string()
-          .optional()
-          .describe("App process/path filter for window selection, or executable path for launch_app."),
-        title: z
-          .string()
-          .optional()
-          .describe("Optional window title filter when selecting a window without windowId."),
-        x: z
-          .number()
-          .optional()
-          .describe("Window-relative x coordinate for click."),
-        y: z
-          .number()
-          .optional()
-          .describe("Window-relative y coordinate for click."),
-        text: z
-          .string()
-          .optional()
-          .describe("Literal text for type_text."),
-        key: z
-          .string()
-          .optional()
-          .describe("Key or chord for press_key, such as Return, Escape, Tab, Control_L+s, or Alt+F4. Windows-key shortcuts are blocked."),
-        includeImage: z
-          .boolean()
-          .optional()
-          .describe("For screenshot, include base64 image content. Defaults to true."),
-        purpose: z
-          .string()
-          .optional()
-          .describe("Short reason for the UI action. Required in practice for risky actions so safety checks can classify it."),
-        confirmed: z
-          .boolean()
-          .optional()
-          .describe("Set true only when the user gave explicit action-time confirmation for a risky UI action."),
-      },
-      outputSchema: resultOutputSchema({
-        action: z.enum(["list_windows", "screenshot", "activate", "click", "type_text", "press_key", "launch_app"]),
-        ok: z.boolean(),
-        requiresConfirmation: z.boolean(),
-        windows: z.array(z.object({
-          id: z.number(),
-          title: z.string(),
-          processName: z.string(),
-          processId: z.number(),
-          path: z.string().optional(),
-          x: z.number(),
-          y: z.number(),
-          width: z.number(),
-          height: z.number(),
-        })).optional(),
-        window: z.object({
-          id: z.number(),
-          title: z.string(),
-          processName: z.string(),
-          processId: z.number(),
-          path: z.string().optional(),
-          x: z.number(),
-          y: z.number(),
-          width: z.number(),
-          height: z.number(),
-        }).optional(),
-        screenshot: z.object({
-          width: z.number(),
-          height: z.number(),
-          mimeType: z.literal("image/png"),
-          data: z.string().optional(),
-        }).optional(),
-        blockedReasons: z.array(z.string()),
-        warnings: z.array(z.string()),
-      }),
-      ...toolWidgetDescriptorMeta(config, "shell"),
-      annotations: {
-        readOnlyHint: false,
-        destructiveHint: true,
-        idempotentHint: false,
-        openWorldHint: true,
-      },
-    },
-    async (input) => {
-      const startedAt = performance.now();
-
-      try {
-        const response = await computerUse(input);
-        const content: ToolContent[] = [textBlock(response.result)];
-        if (response.screenshot?.data) {
-          content.push(imageBlock(response.screenshot.data, response.screenshot.mimeType));
-        }
-        logToolCall(config, {
-          tool: toolNames.computerUse,
-          success: response.ok,
-          durationMs: Math.round(performance.now() - startedAt),
-          error: response.ok ? undefined : response.blockedReasons.join("; "),
-        });
-
-        return {
-          content,
-          isError: !response.ok,
-          _meta: {
-            tool: toolNames.computerUse,
-            card: {
-              summary: {
-                action: response.action,
-                ok: response.ok,
-                window: response.window ? `${response.window.processName}: ${response.window.title}` : undefined,
-                windows: response.windows?.length,
-                blockedReasons: response.blockedReasons.length,
-                warnings: response.warnings.length,
-              },
-            },
-          },
-          structuredContent: {
-            result: contentText(content),
-            action: response.action,
-            ok: response.ok,
-            requiresConfirmation: response.requiresConfirmation,
-            windows: response.windows,
-            window: response.window,
-            screenshot: response.screenshot
-              ? {
-                  width: response.screenshot.width,
-                  height: response.screenshot.height,
-                  mimeType: response.screenshot.mimeType,
-                  data: response.screenshot.data,
-                }
-              : undefined,
-            blockedReasons: response.blockedReasons,
-            warnings: response.warnings,
-          },
-        };
-      } catch (error) {
-        const content = [textBlock(error instanceof Error ? error.message : String(error))];
-        logFailedToolResponse(config, {
-          tool: toolNames.computerUse,
-        }, content, startedAt);
-        return { content, isError: true };
-      }
-    },
-  );
+  registerComputerUseTool(server, config, toolNames);
 
   registerAppTool(
     server,
