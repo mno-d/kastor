@@ -24,11 +24,14 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Test
-        run: npm test
+      - name: Typecheck
+        run: npm run typecheck
 
       - name: Build
         run: npm run build
+
+      - name: Public check
+        run: node dist/cli.js public-check
 
       - name: Pack
         run: npm pack --json
