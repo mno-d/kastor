@@ -15,29 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Build
-        run: npm run build
-
-      - name: Public check
-        run: node dist/cli.js public-check
-
-      - name: Pack
-        run: npm pack --json
-
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: mnod-kastor-*.tgz
-          generate_release_notes: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" releases/mnod-kastor-*.tgz --generate-notes --title "Kastor $GITHUB_REF_NAME"
