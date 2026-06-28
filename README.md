@@ -18,6 +18,10 @@ local files, shell checks, git state, and workflow helpers.
 
 ![Kastor workspace preview](docs/assets/kastor-screenshot.svg)
 
+![Kastor ChatGPT flow](docs/assets/kastor-chatgpt-flow.svg)
+
+![Kastor demo animation](docs/assets/kastor-demo.gif)
+
 ```mermaid
 flowchart TD
   Client["ChatGPT / MCP client"] --> Auth["Owner password approval"]
@@ -45,7 +49,7 @@ Requirements:
 Install from the current GitHub release:
 
 ```bash
-npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.8/mnod-kastor-1.0.8.tgz
+npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.9/mnod-kastor-1.0.9.tgz
 kastor setup-guide
 kastor init
 kastor doctor
@@ -157,6 +161,10 @@ KASTOR_PUBLIC_BASE_URL=https://your-domain.example.com node dist/cli.js serve
 
 See [docs/tunnels.md](docs/tunnels.md) for examples.
 
+If this is your first time connecting ChatGPT Web, use
+[docs/chatgpt-web-e2e.md](docs/chatgpt-web-e2e.md) and test with a small folder
+before opening a real project.
+
 ## Main Tools
 
 - `open_workspace`: open an allowed project folder
@@ -227,9 +235,14 @@ have to match.
 - [README.ja.md](README.ja.md)
 - [docs/setup.md](docs/setup.md)
 - [docs/setup.ja.md](docs/setup.ja.md)
+- [docs/public-vs-private.md](docs/public-vs-private.md)
+- [docs/public-vs-private.ja.md](docs/public-vs-private.ja.md)
 - [docs/os-setup.md](docs/os-setup.md)
 - [docs/tunnels.md](docs/tunnels.md)
+- [docs/tunnels.ja.md](docs/tunnels.ja.md)
 - [docs/security.md](docs/security.md)
 - [docs/security.ja.md](docs/security.ja.md)
+- [docs/chatgpt-web-e2e.md](docs/chatgpt-web-e2e.md)
+- [docs/chatgpt-web-e2e.ja.md](docs/chatgpt-web-e2e.ja.md)
 - [docs/chatgpt-coding-workflow.md](docs/chatgpt-coding-workflow.md)
 - [docs/publishing.md](docs/publishing.md)

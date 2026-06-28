@@ -41,7 +41,9 @@ export function publicCheck(input: PublicCheckInput): PublicCheckResult {
     if (normalized.endsWith("auth.json") || normalized.includes("secret") || normalized.includes("credential")) {
       issues.push({ severity: "blocker", message: `Tracked sensitive-looking file: ${file}` });
     }
-    if (normalized.endsWith(".tgz")) {
+    // Release workflow uploads this committed artifact. Other tracked archives
+    // are usually accidental local packaging output and should stay visible.
+    if (normalized.endsWith(".tgz") && !/^releases\/mnod-kastor-\d+\.\d+\.\d+\.tgz$/.test(normalized)) {
       issues.push({ severity: "warning", message: `Tracked package archive: ${file}` });
     }
   }

@@ -422,9 +422,9 @@ function printSetupGuide(): void {
       : "   - Install Node 22 LTS, Git, and bash.",
     "",
     "2. Choose a permission preset",
-    "   - project: current project only, safest default.",
-    "   - projects: one or more project folders.",
-    "   - power: broader private-machine access; do not use for public/shared setups.",
+    "   - project: current project only. Use this for examples, demos, and first installs.",
+    "   - projects: several project folders. Good for one developer machine.",
+    "   - power: broad private-machine access. Never use this in public templates.",
     "",
     "3. Create a public HTTPS tunnel",
     "   - ngrok: stable domain is easiest for ChatGPT connectors.",
@@ -436,6 +436,7 @@ function printSetupGuide(): void {
     "4. Configure and verify",
     "   kastor init",
     "   kastor doctor",
+    "   kastor doctor --json",
     "   kastor serve",
     "",
     "5. Connect your MCP host",
@@ -443,6 +444,7 @@ function printSetupGuide(): void {
     "",
     "6. Before sharing",
     "   Run kastor public-check from the repository you plan to publish.",
+    "   Check README screenshots, config examples, and release links for private paths or tokens.",
   ];
 
   console.log(lines.join("\n"));
@@ -542,6 +544,8 @@ function setupChecklist(): string[] {
     checkSqliteNative() === "ok"
       ? "SQLite native dependency loads"
       : "Run npm rebuild better-sqlite3",
+    "Confirm KASTOR_PUBLIC_BASE_URL is an origin, then give the MCP host the /mcp URL",
+    "Open a tiny test workspace first, then run self_test before using a real project",
     "Run kastor setup-guide if tunnel or permission setup is unclear",
   ];
 }

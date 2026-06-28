@@ -1,6 +1,6 @@
 {
   "name": "@mnod/kastor",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Codex-style local development harness for ChatGPT and other MCP clients.",
   "type": "module",
   "main": "dist/server.js",

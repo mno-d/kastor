@@ -11,13 +11,14 @@
 - ChatGPT Webから使う場合は、PCに届く公開HTTPS URL
 
 Kastorはトンネルを自動では作りません。Cloudflare Tunnel、ngrok、Pinggy、Tailscale Funnel、自前のHTTPSリバースプロキシなどを使ってください。
+具体例は[トンネル設定](tunnels.ja.md)に分けています。
 
 ## インストール
 
 今の公開版はGitHub Releaseから入れます。
 
 ```bash
-npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.8/mnod-kastor-1.0.8.tgz
+npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.9/mnod-kastor-1.0.9.tgz
 ```
 
 インストールできたか確認します。
@@ -41,6 +42,16 @@ kastor init
 ```
 
 質問に答えると、`~/.kastor/config.json`と`~/.kastor/auth.json`が作られます。
+
+最初の1回は、この順番で確認すると詰まりにくいです。
+
+1. `kastor --help`でコマンドが見える
+2. `kastor setup-guide`で必要なものを確認する
+3. `kastor init`で`project`を選ぶ
+4. `kastor doctor`で公開URLと許可フォルダを見る
+5. `kastor serve`を起動する
+6. ChatGPTには`/mcp`付きのURLを渡す
+7. まず小さいテストフォルダだけ開かせる
 
 ## 権限プリセット
 
@@ -154,3 +165,5 @@ https://your-tunnel-host.example.com/mcp
 4. ChatGPT側にURLを登録し、Owner passwordで承認する
 5. 小さいテスト用フォルダで`open_workspace`を呼ばせる
 6. 害のないファイルを読ませてから、`self_test`を実行させる
+
+詳しい確認手順は[ChatGPT Webでの実機確認](chatgpt-web-e2e.ja.md)に分けています。

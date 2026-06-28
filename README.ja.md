@@ -8,6 +8,10 @@ AI本体ではありません。考えるのはChatGPTやClaudeで、KastorはPC
 
 ![Kastor logo](docs/assets/kastor-logo.svg)
 
+![Kastorの接続イメージ](docs/assets/kastor-chatgpt-flow.svg)
+
+![Kastorの簡単な動き](docs/assets/kastor-demo.gif)
+
 ## 何ができるか
 
 - 許可したフォルダのファイルを読む
@@ -65,7 +69,7 @@ ChatGPTやClaudeが頭で、KastorがPC側の道具箱です。
 今の公開版はGitHub Releaseから入れます。
 
 ```bash
-npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.8/mnod-kastor-1.0.8.tgz
+npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.9/mnod-kastor-1.0.9.tgz
 kastor setup-guide
 kastor init
 kastor doctor
@@ -160,6 +164,11 @@ Kastorは標準でここに設定を書きます。
 
 - [docs/setup.ja.md](docs/setup.ja.md)
 - [docs/security.ja.md](docs/security.ja.md)
+- [docs/public-vs-private.ja.md](docs/public-vs-private.ja.md)
+- [docs/chatgpt-web-e2e.ja.md](docs/chatgpt-web-e2e.ja.md)
 - [docs/setup.md](docs/setup.md)
 - [docs/security.md](docs/security.md)
+- [docs/public-vs-private.md](docs/public-vs-private.md)
+- [docs/chatgpt-web-e2e.md](docs/chatgpt-web-e2e.md)
 - [docs/tunnels.md](docs/tunnels.md)
+- [docs/tunnels.ja.md](docs/tunnels.ja.md)
