@@ -2,6 +2,8 @@
 
 ![Kastor logo](docs/assets/kastor-logo.svg)
 
+[日本語README](README.ja.md)
+
 Kastor lets ChatGPT, or another MCP client, work with files on your machine.
 
 You choose the folders it can touch. The client can then read files, edit code,
@@ -9,6 +11,10 @@ run checks, inspect git changes, and use a few Codex-like workflow tools.
 
 Kastor is not another AI agent. It is the local tool server. The thinking still
 happens in ChatGPT or the MCP client you connect.
+
+It is also not Codex itself. Codex is an agent experience with its own runtime.
+Kastor is the bridge that gives an MCP-capable client controlled access to your
+local files, shell checks, git state, and workflow helpers.
 
 ![Kastor workspace preview](docs/assets/kastor-screenshot.svg)
 
@@ -214,8 +220,11 @@ have to match.
 
 ## More Docs
 
+- [README.ja.md](README.ja.md)
 - [docs/setup.md](docs/setup.md)
+- [docs/setup.ja.md](docs/setup.ja.md)
 - [docs/os-setup.md](docs/os-setup.md)
 - [docs/tunnels.md](docs/tunnels.md)
 - [docs/security.md](docs/security.md)
+- [docs/security.ja.md](docs/security.ja.md)
 - [docs/publishing.md](docs/publishing.md)
