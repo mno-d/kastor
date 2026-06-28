@@ -1,0 +1,5 @@
+node_modules/
+releases/
+.env
+*.log
+.git/

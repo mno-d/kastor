@@ -196,7 +196,7 @@ count on it for public publishing.
 Use a scoped package name such as:
 
 ```text
-@mno-d/kastor
+@mnod/kastor
 ```
 
 The command can still be `kastor`; the npm package name and CLI command do not

@@ -13,18 +13,18 @@ The default files are:
 Use another config directory with:
 
 ```bash
-KASTOR_CONFIG_DIR=/path/to/config npx kastor serve
+KASTOR_CONFIG_DIR=/path/to/config npx @mnod/kastor serve
 ```
 
 ## Commands
 
 ```bash
-npx kastor init
-npx kastor setup-guide
-npx kastor serve
-npx kastor doctor
-npx kastor config get
-npx kastor config set publicBaseUrl https://kastor.example.com
+npx @mnod/kastor init
+npx @mnod/kastor setup-guide
+npx @mnod/kastor serve
+npx @mnod/kastor doctor
+npx @mnod/kastor config get
+npx @mnod/kastor config set publicBaseUrl https://kastor.example.com
 ```
 
 ## Core Environment Variables
@@ -96,7 +96,7 @@ Example:
 
 ```bash
 KASTOR_SKILL_PATHS="$HOME/.codex/skills,$HOME/.claude/skills" \
-npx kastor serve
+npx @mnod/kastor serve
 ```
 
 ## Logging
@@ -126,7 +126,7 @@ KASTOR_WORKTREE_ROOT="$HOME/.kastor/worktrees" \
 KASTOR_TOOL_MODE="minimal" \
 KASTOR_TOOL_NAMING="short" \
 KASTOR_WIDGETS="changes" \
-npx kastor serve
+npx @mnod/kastor serve
 ```
 
 The environment assignments must be part of the same command invocation, or
