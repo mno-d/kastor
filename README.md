@@ -87,6 +87,9 @@ Do not share a setup that allows `C:\`, `/`, or your whole home folder. That is
 fine for your own private machine if you know what you are doing. It is a bad
 default for anyone else.
 
+If you want full-PC access, make it a private-machine choice. Do not put that in
+a tutorial, template, screenshot, or shared config.
+
 ## Config Files
 
 Kastor writes local config here by default:
@@ -184,6 +187,20 @@ Also inspect:
 - tunnel URL files
 
 Those files should stay local and untracked.
+
+## npm Name
+
+The plain `kastor` package name has an old unpublished record on npm, so do not
+count on it for public publishing.
+
+Use a scoped package name such as:
+
+```text
+@mno-d/kastor
+```
+
+The command can still be `kastor`; the npm package name and CLI command do not
+have to match.
 
 ## More Docs
 
