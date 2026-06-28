@@ -185,6 +185,7 @@ npm run typecheck
 npm test
 npm run build
 npm audit --audit-level=high
+kastor public-check
 npm pack --dry-run
 ```
 
@@ -227,4 +228,5 @@ have to match.
 - [docs/tunnels.md](docs/tunnels.md)
 - [docs/security.md](docs/security.md)
 - [docs/security.ja.md](docs/security.ja.md)
+- [docs/chatgpt-coding-workflow.md](docs/chatgpt-coding-workflow.md)
 - [docs/publishing.md](docs/publishing.md)

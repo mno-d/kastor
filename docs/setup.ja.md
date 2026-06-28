@@ -124,6 +124,14 @@ kastor doctor
 
 Node、Git、Bash、公開URL、許可ホスト、SQLite依存関係などを確認できます。
 
+公開前に、よくある事故も確認します。
+
+```bash
+kastor public-check
+```
+
+秘密情報らしき文字列、追跡された`.env`、広すぎる許可rootなどを見ます。
+
 ## ChatGPT Webで使う
 
 ChatGPT側にカスタムMCPやApps connectorを追加できる場合、次のURLを登録します。

@@ -104,6 +104,7 @@ shellコマンドの本文ログは標準では無効です。`KASTOR_LOG_SHELL_
 共有前に最低限これを確認してください。
 
 ```bash
+kastor public-check
 git status --short
 git grep -n "sk-\\|xoxb\\|ghp_\\|GHp"
 ```

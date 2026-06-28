@@ -141,3 +141,18 @@ The shell tool is for commands that belong in a terminal:
 
 File writes should go through the edit/write tools rather than shell
 redirection, heredocs, `tee`, `sed -i`, or generated scripts.
+
+## ChatGPT Web Connection
+
+1. Run `kastor doctor`.
+2. Confirm the public MCP URL ends in `/mcp`.
+3. Register that URL in ChatGPT.
+4. Approve the Owner password in the Kastor approval page.
+5. Ask ChatGPT to call `open_workspace` once for the project folder.
+6. After changing Kastor tools or the public URL, reconnect or refresh the connector in ChatGPT.
+
+## Risky Work
+
+Kastor can edit local files inside configured roots. Deletions, large overwrites,
+uploads, external sends, installs, permission changes, payments, and publishing
+should be approved in the same turn before they happen.

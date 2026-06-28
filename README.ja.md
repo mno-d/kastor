@@ -69,6 +69,7 @@ npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.3/mnod-kas
 kastor setup-guide
 kastor init
 kastor doctor
+kastor public-check
 kastor serve
 ```
 
@@ -108,6 +109,8 @@ https://your-domain.example.com/mcp
 https://your-domain.example.com
 ```
 
+接続したら、KastorのOwner password画面で承認します。ツール説明や公開URLを変えた場合は、ChatGPT側でコネクタを再接続してください。
+
 ## 安全に使う
 
 Kastorは強い道具です。許可したフォルダ内では、AIがファイルを読み、編集し、コマンドを実行できます。
@@ -130,6 +133,14 @@ C:\Users\you
 ```
 
 PC全体アクセスは、自分専用PCで、何が起きるか分かっている場合だけにしてください。
+
+公開前には次を実行してください。
+
+```bash
+kastor public-check
+```
+
+`.env`、`auth.json`、APIキーらしき文字列、広すぎる許可rootなどを確認します。
 
 ## 重要なファイル
 

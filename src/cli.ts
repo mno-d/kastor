@@ -7,6 +7,7 @@ import * as prompts from "@clack/prompts";
 import { getShellConfig } from "@earendil-works/pi-coding-agent";
 import { satisfies } from "semver";
 import { loadConfig } from "./config.js";
+import { publicCheck } from "./public-check.js";
 import {
   generateOwnerToken,
   loadDevspaceFiles,
@@ -16,7 +17,7 @@ import {
 } from "./user-config.js";
 import { expandHomePath } from "./roots.js";
 
-type Command = "serve" | "init" | "doctor" | "setup-guide" | "config" | "help";
+type Command = "serve" | "init" | "doctor" | "setup-guide" | "public-check" | "config" | "help";
 type PermissionPreset = "project" | "projects" | "power";
 const require = createRequire(import.meta.url);
 const SUPPORTED_NODE_RANGE = ">=20.12 <27";
@@ -41,6 +42,9 @@ async function main(argv: string[]): Promise<void> {
     case "setup-guide":
       printSetupGuide();
       return;
+    case "public-check":
+      runPublicCheck();
+      return;
     case "config":
       runConfigCommand(args);
       return;
@@ -52,7 +56,13 @@ async function main(argv: string[]): Promise<void> {
 
 function normalizeCommand(command: string | undefined): Command {
   if (!command || command === "serve" || command === "start") return "serve";
-  if (command === "init" || command === "doctor" || command === "setup-guide" || command === "config") return command;
+  if (
+    command === "init" ||
+    command === "doctor" ||
+    command === "setup-guide" ||
+    command === "public-check" ||
+    command === "config"
+  ) return command;
   if (command === "help" || command === "--help" || command === "-h") return "help";
   throw new Error(`Unknown command: ${command}`);
 }
@@ -220,6 +230,8 @@ async function runDoctor(): Promise<void> {
     console.log(`Permission preset: ${files.config.permissionPreset ?? "not recorded"}`);
     console.log(`Filesystem scope: ${filesystemScopeStatus(config.allowedRoots)}`);
     console.log(`Public URL status: ${publicUrlStatus(config.publicBaseUrl)}`);
+    console.log(`ChatGPT MCP endpoint: ${new URL("/mcp", config.publicBaseUrl).toString()}`);
+    console.log(`Owner approval: ${files.authExists ? "ready" : "missing auth.json; run kastor init"}`);
   } catch (error) {
     console.log(`Config status: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -228,6 +240,26 @@ async function runDoctor(): Promise<void> {
   console.log("Next setup checks:");
   for (const line of setupChecklist()) {
     console.log(`- ${line}`);
+  }
+}
+
+function runPublicCheck(): void {
+  const result = publicCheck({
+    cwd: process.cwd(),
+    files: loadDevspaceFiles(),
+  });
+
+  if (result.issues.length === 0) {
+    console.log("public-check: ok");
+    return;
+  }
+
+  console.log(`public-check: ${result.ok ? "warnings" : "blocked"}`);
+  for (const issue of result.issues) {
+    console.log(`- ${issue.severity}: ${issue.message}`);
+  }
+  if (!result.ok) {
+    process.exitCode = 1;
   }
 }
 
@@ -270,6 +302,7 @@ function printHelp(): void {
       "  kastor init            Create or update ~/.kastor/config.json and auth.json",
       "  kastor doctor          Show config, runtime, and native dependency status",
       "  kastor setup-guide     Print OS, tunnel, and permission setup guidance",
+      "  kastor public-check    Check for common public-sharing mistakes",
       "  kastor config get      Print persisted config",
       "  kastor config set publicBaseUrl <url|null>",
       "",
@@ -313,6 +346,9 @@ function printSetupGuide(): void {
     "",
     "5. Connect your MCP host",
     "   Use https://your-domain.example.com/mcp, approve the Owner password, then ask the host to call open_workspace.",
+    "",
+    "6. Before sharing",
+    "   Run kastor public-check from the repository you plan to publish.",
   ];
 
   console.log(lines.join("\n"));
