@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Kastor workspace screenshot</title>
+  <desc id="desc">A screenshot-style preview of Kastor showing local project access, tools, checks, and safety status.</desc>
+  <defs>
+    <linearGradient id="page" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111d"/>
+      <stop offset="1" stop-color="#0e2030"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102033"/>
+      <stop offset="1" stop-color="#0c1928"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="900" fill="url(#page)"/>
+  <path d="M0 160C240 96 394 207 584 155C805 95 955 40 1440 104V0H0z" fill="#0f2b40" opacity="0.6"/>
+  <g transform="translate(92 72)" filter="url(#shadow)">
+    <rect width="1256" height="756" rx="28" fill="url(#panel)" stroke="#25445c"/>
+    <rect width="1256" height="74" rx="28" fill="#091521"/>
+    <circle cx="38" cy="37" r="9" fill="#ef4444"/>
+    <circle cx="66" cy="37" r="9" fill="#facc15"/>
+    <circle cx="94" cy="37" r="9" fill="#22c55e"/>
+    <text x="132" y="47" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#e6f3ff">Kastor</text>
+    <text x="234" y="47" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#8fb1c8">trusted local MCP workspace</text>
+    <g transform="translate(36 112)">
+      <rect width="346" height="596" rx="20" fill="#0a1724" stroke="#20384c"/>
+      <text x="28" y="44" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#8fb1c8">Workspace</text>
+      <text x="28" y="86" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="760" fill="#e5f4ff">open_workspace</text>
+      <rect x="28" y="118" width="290" height="48" rx="12" fill="#10283a" stroke="#24506a"/>
+      <text x="48" y="149" font-family="Consolas, monospace" font-size="18" fill="#b8d2e3">C:\Users\you\Projects</text>
+      <text x="28" y="216" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#8fb1c8">Allowed tools</text>
+      <g font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#d6ecfa">
+        <rect x="28" y="242" width="132" height="38" rx="19" fill="#0f3044"/><text x="52" y="267">read</text>
+        <rect x="174" y="242" width="132" height="38" rx="19" fill="#0f3044"/><text x="198" y="267">edit</text>
+        <rect x="28" y="294" width="132" height="38" rx="19" fill="#0f3044"/><text x="52" y="319">git</text>
+        <rect x="174" y="294" width="132" height="38" rx="19" fill="#0f3044"/><text x="198" y="319">checks</text>
+      </g>
+      <rect x="28" y="398" width="290" height="122" rx="16" fill="#132315" stroke="#2e6b3e"/>
+      <text x="50" y="436" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="700" fill="#bbf7d0">safe scope</text>
+      <text x="50" y="470" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" fill="#b7d6be">Project folders only</text>
+    </g>
+    <g transform="translate(420 112)">
+      <rect width="800" height="596" rx="20" fill="#08131f" stroke="#20384c"/>
+      <text x="32" y="48" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#8fb1c8">Run</text>
+      <text x="32" y="91" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="760" fill="#e5f4ff">Review local changes before handoff</text>
+      <g transform="translate(32 132)" font-family="Consolas, monospace" font-size="18">
+        <rect width="736" height="310" rx="16" fill="#050b12" stroke="#1f3345"/>
+        <text x="28" y="44" fill="#7dd3fc">$ kastor doctor</text>
+        <text x="28" y="84" fill="#d6ecfa">Node: v25.2.1 (supported)</text>
+        <text x="28" y="124" fill="#d6ecfa">Git: available</text>
+        <text x="28" y="164" fill="#d6ecfa">Bash: available</text>
+        <text x="28" y="204" fill="#d6ecfa">Allowed roots: C:\Users\you\Projects</text>
+        <text x="28" y="244" fill="#86efac">Filesystem scope: narrow project folders</text>
+      </g>
+      <g transform="translate(32 474)">
+        <rect width="224" height="76" rx="18" fill="#10283a" stroke="#24506a"/>
+        <text x="24" y="32" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" fill="#8fb1c8">Next check</text>
+        <text x="24" y="58" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#e5f4ff">npm test</text>
+        <rect x="256" width="224" height="76" rx="18" fill="#10283a" stroke="#24506a"/>
+        <text x="280" y="32" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" fill="#8fb1c8">Diff review</text>
+        <text x="280" y="58" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#e5f4ff">git status</text>
+        <rect x="512" width="224" height="76" rx="18" fill="#10283a" stroke="#24506a"/>
+        <text x="536" y="32" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" fill="#8fb1c8">Client</text>
+        <text x="536" y="58" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#e5f4ff">ChatGPT</text>
+      </g>
+    </g>
+  </g>
+</svg>
