@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = $PSScriptRoot
-$LogDir = Join-Path $HOME ".devspace"
+$LogDir = Join-Path $HOME ".kastor"
 $ClientOutLog = Join-Path $LogDir "chatgpt-client.out.log"
 $ClientErrLog = Join-Path $LogDir "chatgpt-client.err.log"
 

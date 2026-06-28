@@ -43,7 +43,7 @@ sends, installs, payments, permission changes, or publishing.
 `kastor init` generates an Owner password and stores it in:
 
 ```text
-~/.devspace/auth.json
+~/.kastor/auth.json
 ```
 
 When an MCP client connects, Kastor shows an approval page. Enter the Owner

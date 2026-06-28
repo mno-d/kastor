@@ -11,8 +11,8 @@ const root = await mkdtemp(join(tmpdir(), "devspace-review-checkpoints-test-"));
 
 try {
   await git(root, ["init"]);
-  await git(root, ["config", "user.email", "devspace@example.com"]);
-  await git(root, ["config", "user.name", "DevSpace Test"]);
+  await git(root, ["config", "user.email", "kastor@example.com"]);
+  await git(root, ["config", "user.name", "Kastor Test"]);
   await writeFile(join(root, "README.md"), "hello\n");
   await git(root, ["add", "README.md"]);
   await git(root, ["commit", "-m", "Initial commit"]);

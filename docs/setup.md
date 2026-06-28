@@ -117,8 +117,8 @@ password approval page. Enter the Owner password printed during setup.
 The default config files are:
 
 ```text
-~/.devspace/config.json
-~/.devspace/auth.json
+~/.kastor/config.json
+~/.kastor/auth.json
 ```
 
 Keep `auth.json` private.

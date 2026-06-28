@@ -185,7 +185,7 @@ function parseOAuthConfig(env: NodeJS.ProcessEnv, ownerToken: string | undefined
       DEFAULT_OAUTH_REFRESH_TOKEN_TTL_SECONDS,
       "KASTOR_OAUTH_REFRESH_TOKEN_TTL_SECONDS",
     ),
-    scopes: parseStringList(env.KASTOR_OAUTH_SCOPES ?? env.DEVSPACE_OAUTH_SCOPES, ["devspace"]),
+    scopes: parseStringList(env.KASTOR_OAUTH_SCOPES ?? env.DEVSPACE_OAUTH_SCOPES, ["kastor"]),
     allowedRedirectHosts: parseStringList(env.KASTOR_OAUTH_ALLOWED_REDIRECT_HOSTS ?? env.DEVSPACE_OAUTH_ALLOWED_REDIRECT_HOSTS, [
       "chatgpt.com",
       "localhost",
@@ -195,11 +195,11 @@ function parseOAuthConfig(env: NodeJS.ProcessEnv, ownerToken: string | undefined
 }
 
 function defaultStateDir(): string {
-  return join(homedir(), ".local", "share", "devspace");
+  return join(homedir(), ".local", "share", "kastor");
 }
 
 function defaultWorktreeRoot(): string {
-  return join(homedir(), ".devspace", "worktrees");
+  return join(homedir(), ".kastor", "worktrees");
 }
 
 function defaultAgentDir(): string {

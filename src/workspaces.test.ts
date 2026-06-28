@@ -58,8 +58,8 @@ try {
   await writeFile(join(gitRoot, "AGENTS.md"), "git root instructions\n");
   await writeFile(join(gitRoot, "README.md"), "hello\n");
   await git(gitRoot, ["init"]);
-  await git(gitRoot, ["config", "user.email", "devspace@example.com"]);
-  await git(gitRoot, ["config", "user.name", "DevSpace Test"]);
+  await git(gitRoot, ["config", "user.email", "kastor@example.com"]);
+  await git(gitRoot, ["config", "user.name", "Kastor Test"]);
   await git(gitRoot, ["add", "."]);
   await git(gitRoot, ["commit", "-m", "Initial commit"]);
   await writeFile(join(gitRoot, "dirty.txt"), "not copied\n");

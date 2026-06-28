@@ -267,7 +267,7 @@ function printHelp(): void {
       "Usage:",
       "  kastor                 Run first-time setup if needed, then start the server",
       "  kastor serve           Start the server",
-      "  kastor init            Create or update ~/.devspace/config.json and auth.json",
+      "  kastor init            Create or update ~/.kastor/config.json and auth.json",
       "  kastor doctor          Show config, runtime, and native dependency status",
       "  kastor setup-guide     Print OS, tunnel, and permission setup guidance",
       "  kastor config get      Print persisted config",

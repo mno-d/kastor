@@ -36,7 +36,7 @@ export interface DevspaceFiles {
 }
 
 export function devspaceConfigDir(env: NodeJS.ProcessEnv = process.env): string {
-  return resolve(expandHomePath(env.KASTOR_CONFIG_DIR ?? env.DEVSPACE_CONFIG_DIR ?? join(homedir(), ".devspace")));
+  return resolve(expandHomePath(env.KASTOR_CONFIG_DIR ?? env.DEVSPACE_CONFIG_DIR ?? join(homedir(), ".kastor")));
 }
 
 export function devspaceConfigPath(env: NodeJS.ProcessEnv = process.env): string {

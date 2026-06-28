@@ -13,10 +13,10 @@ ChatGPT web availability depends on the user's ChatGPT plan and workspace settin
 Do not publish:
 
 - `.env`
-- `.devspace/auth.json`
+- `.kastor/auth.json`
 - real owner tokens
 - real tunnel domains tied to a private machine
-- logs under `~/.devspace`
+- logs under `~/.kastor`
 - broad allowed roots such as `C:\`, `/`, or a whole home folder
 
 ## Preflight

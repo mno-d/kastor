@@ -15,6 +15,12 @@ kastor setup-guide
 kastor doctor
 ```
 
+If you are running from a source checkout, you can use the helper script:
+
+```bash
+bash ./scripts/bootstrap-unix.sh --init
+```
+
 ## Windows
 
 Install:
@@ -30,6 +36,12 @@ npm install
 npm run build
 kastor init
 kastor doctor
+```
+
+From a source checkout, this does the same checks and build:
+
+```powershell
+.\scripts\bootstrap-windows.ps1 -RunInit
 ```
 
 Choose a narrow project folder such as:
@@ -89,4 +101,3 @@ Choose a narrow project folder such as:
 - `project`: current project only. Safest default.
 - `projects`: multiple project folders.
 - `power`: broader private-machine access. Not for public/shared examples.
-

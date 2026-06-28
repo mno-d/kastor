@@ -7,19 +7,25 @@
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$LogDir = Join-Path $HOME ".devspace"
+$LogDir = Join-Path $HOME ".kastor"
 $NgrokLog = Join-Path $LogDir "ngrok-7678.log"
 $NgrokErrLog = Join-Path $LogDir "ngrok-7678.err.log"
-$DevspaceOutLog = Join-Path $LogDir "devspace-7678-local.out.log"
-$DevspaceErrLog = Join-Path $LogDir "devspace-7678-local.err.log"
-$UrlFile = Join-Path $LogDir "devspace-public-url.txt"
+$DevspaceOutLog = Join-Path $LogDir "kastor-7678-local.out.log"
+$DevspaceErrLog = Join-Path $LogDir "kastor-7678-local.err.log"
+$UrlFile = Join-Path $LogDir "kastor-public-url.txt"
 $Port = 7678
 New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
 
 function Get-ConfiguredAllowedRoots {
   if ($AllowedRoots) { return $AllowedRoots }
 
-  $configPath = Join-Path $HOME ".devspace\config.json"
+  $configPath = if ($env:KASTOR_CONFIG_DIR) {
+    Join-Path $env:KASTOR_CONFIG_DIR "config.json"
+  } elseif ($env:DEVSPACE_CONFIG_DIR) {
+    Join-Path $env:DEVSPACE_CONFIG_DIR "config.json"
+  } else {
+    Join-Path $HOME ".kastor\config.json"
+  }
   if (-not (Test-Path -LiteralPath $configPath)) { return "" }
 
   try {
@@ -126,7 +132,7 @@ if (-not $NgrokDomain) {
   if ($PublicBaseUrl -match "^https?://([^/]+)") {
     $NgrokDomain = $Matches[1]
   } else {
-    throw "Set DEVSPACE_NGROK_DOMAIN or pass -NgrokDomain."
+    throw "Set KASTOR_NGROK_DOMAIN or pass -NgrokDomain."
   }
 }
 

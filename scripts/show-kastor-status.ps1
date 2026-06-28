@@ -5,9 +5,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$LogDir = Join-Path $HOME ".devspace"
-$KastorOutLog = Join-Path $LogDir "devspace-7678-local.out.log"
-$KastorErrLog = Join-Path $LogDir "devspace-7678-local.err.log"
+$LogDir = Join-Path $HOME ".kastor"
+$KastorOutLog = Join-Path $LogDir "kastor-7678-local.out.log"
+$KastorErrLog = Join-Path $LogDir "kastor-7678-local.err.log"
 $CloudflaredLog = Join-Path $LogDir "cloudflared-kastor.log"
 $CloudflareOutLog = Join-Path $LogDir "kastor-cloudflare.out.log"
 $CloudflareErrLog = Join-Path $LogDir "kastor-cloudflare.err.log"

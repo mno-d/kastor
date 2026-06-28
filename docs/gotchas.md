@@ -121,7 +121,7 @@ KASTOR_OAUTH_ALLOWED_REDIRECT_HOSTS="chatgpt.com,example.com" npx kastor serve
 Make sure you are entering the Owner password from:
 
 ```text
-~/.devspace/auth.json
+~/.kastor/auth.json
 ```
 
 To regenerate setup:

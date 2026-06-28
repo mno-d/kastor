@@ -129,7 +129,7 @@ async function createWorkingTreeSnapshot(gitRoot: string): Promise<string> {
     await git(gitRoot, ["add", "-A", "--", "."], { env });
     const tree = (await git(gitRoot, ["write-tree"], { env })).stdout.trim();
     const parent = (await git(gitRoot, ["rev-parse", "--verify", "HEAD^{commit}"])).stdout.trim();
-    return (await git(gitRoot, ["commit-tree", tree, "-p", parent, "-m", "DevSpace review snapshot"], { env })).stdout.trim();
+    return (await git(gitRoot, ["commit-tree", tree, "-p", parent, "-m", "Kastor review snapshot"], { env })).stdout.trim();
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
@@ -138,10 +138,10 @@ async function createWorkingTreeSnapshot(gitRoot: string): Promise<string> {
 function checkpointEnv(indexPath: string): NodeJS.ProcessEnv {
   return {
     GIT_INDEX_FILE: indexPath,
-    GIT_AUTHOR_NAME: "DevSpace",
-    GIT_AUTHOR_EMAIL: "devspace@users.noreply.local",
-    GIT_COMMITTER_NAME: "DevSpace",
-    GIT_COMMITTER_EMAIL: "devspace@users.noreply.local",
+    GIT_AUTHOR_NAME: "Kastor",
+    GIT_AUTHOR_EMAIL: "kastor@users.noreply.local",
+    GIT_COMMITTER_NAME: "Kastor",
+    GIT_COMMITTER_EMAIL: "kastor@users.noreply.local",
   };
 }
 

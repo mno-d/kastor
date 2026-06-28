@@ -6,8 +6,8 @@ environment variables.
 The default files are:
 
 ```text
-~/.devspace/config.json
-~/.devspace/auth.json
+~/.kastor/config.json
+~/.kastor/auth.json
 ```
 
 Use another config directory with:
@@ -48,7 +48,7 @@ Kastor uses a single-user OAuth approval flow.
 | --- | --- |
 | `KASTOR_OAUTH_ACCESS_TOKEN_TTL_SECONDS` | `3600` |
 | `KASTOR_OAUTH_REFRESH_TOKEN_TTL_SECONDS` | `2592000` |
-| `KASTOR_OAUTH_SCOPES` | `devspace` |
+| `KASTOR_OAUTH_SCOPES` | `kastor` |
 | `KASTOR_OAUTH_ALLOWED_REDIRECT_HOSTS` | `chatgpt.com,localhost,127.0.0.1` |
 
 MCP clients discover metadata from:

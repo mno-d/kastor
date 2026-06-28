@@ -1,162 +1,157 @@
 # Kastor
 
-Kastor is a self-hosted MCP server that gives ChatGPT or another MCP-capable host controlled access to local development workspaces.
+Kastor lets ChatGPT, or another MCP client, work with files on your machine.
 
-It started as a DevSpace-compatible local coding harness, then adds a more Codex-like workflow: workspace opening, scoped file tools, patching, git inspection, verification checks, persistent task plans, review packets, resume packets, rule checks, and optional Windows Computer Use.
+You choose the folders it can touch. The client can then read files, edit code,
+run checks, inspect git changes, and use a few Codex-like workflow tools.
 
-## What It Is
-
-Kastor is not a separate coding agent. The MCP host remains the reasoning surface. Kastor only exposes explicit local tools.
+Kastor is not another AI agent. It is the local tool server. The thinking still
+happens in ChatGPT or the MCP client you connect.
 
 ```mermaid
 flowchart TD
-  Client["ChatGPT / MCP client"] --> Auth["Kastor OAuth approval"]
-  Auth --> MCP["Kastor MCP server"]
-  MCP --> Workspace["open_workspace"]
-  Workspace --> Files["Allowed local project roots"]
-  MCP --> Edit["read / write / edit / apply_patch"]
-  MCP --> Search["grep / glob / ls / size_top"]
-  MCP --> Git["git_status / git_diff / stage / commit / publish preflight"]
-  MCP --> Checks["run_checks / self_test"]
-  MCP --> Plan["task_plan / checkpoint / review / resume / delegate / summary"]
-  MCP --> Guard["rule_check"]
-  MCP --> Screen["computer_use, optional Windows UI control"]
+  Client["ChatGPT / MCP client"] --> Auth["Owner password approval"]
+  Auth --> Server["Kastor MCP server"]
+  Server --> Roots["Allowed project folders"]
+  Server --> Files["read / write / edit / apply_patch"]
+  Server --> Search["grep / glob / ls"]
+  Server --> Git["git status / diff / commit prep"]
+  Server --> Checks["run checks / self test"]
+  Server --> Plan["task plan / checkpoint / review / resume"]
+  Server --> Guard["rule check"]
+  Server --> Screen["optional Windows computer use"]
 ```
 
-## Safety Model
-
-Kastor is powerful local-machine access. Treat an approved MCP client like a trusted developer sitting at your PC.
-
-Keep these rules:
-
-- Allow only narrow project folders with `KASTOR_ALLOWED_ROOTS`.
-- Never use `C:\`, `/`, or a whole home folder for shared setups.
-- Never commit `.env`, `.devspace/auth.json`, owner tokens, tunnel URLs, or machine-specific logs.
-- Use a tunnel URL you control, then approve access with the owner password.
-- Keep `KASTOR_ALLOWED_HOSTS` specific. Do not use `*` outside debugging.
-- Review diffs before commits or publishing.
-
-Public installs should start with one narrow project folder. Widen access only
-after you understand what the connected MCP host can do.
-
-## Install
+## First Run
 
 Requirements:
 
 - Node.js `>=20.12 <27`
 - npm
 - Git
-- A public HTTPS tunnel such as ngrok, Cloudflare Tunnel, Pinggy, Tailscale Funnel, or your own reverse proxy
+- Bash. On Windows, Git Bash is enough.
+- A public HTTPS tunnel if ChatGPT needs to reach this PC
 
 From a clone:
 
 ```bash
 npm install
 npm run build
-npm run start
-```
-
-Or run the CLI after build:
-
-```bash
-node dist/cli.js init
 node dist/cli.js setup-guide
+node dist/cli.js init
 node dist/cli.js doctor
 node dist/cli.js serve
 ```
 
-The package exposes both command names for compatibility:
+Windows users can run:
 
-```bash
-kastor init
-kastor setup-guide
-kastor doctor
-kastor serve
-devspace init
-devspace serve
+```powershell
+.\scripts\bootstrap-windows.ps1 -RunInit
 ```
 
-## Configuration
+macOS and Linux users can run:
 
-Copy `.env.example` to `.env` and adjust it for your machine, or run `kastor init`.
+```bash
+bash ./scripts/bootstrap-unix.sh --init
+```
+
+The MCP endpoint you give to ChatGPT is:
+
+```text
+https://your-domain.example.com/mcp
+```
+
+`KASTOR_PUBLIC_BASE_URL` should be the origin only:
+
+```text
+https://your-domain.example.com
+```
+
+## Permissions
+
+Start small.
+
+`kastor init` asks for one of these presets:
+
+- `project`: only the folder you run setup from
+- `projects`: one or more project folders
+- `power`: broad access on a private machine
+
+For public examples, use `project` or `projects`.
+
+Do not share a setup that allows `C:\`, `/`, or your whole home folder. That is
+fine for your own private machine if you know what you are doing. It is a bad
+default for anyone else.
+
+## Config Files
+
+Kastor writes local config here by default:
+
+```text
+~/.kastor/config.json
+~/.kastor/auth.json
+```
+
+Keep `auth.json` private. It contains the owner password used when a client asks
+to connect.
+
+Kastor still accepts old `DEVSPACE_*` environment variables for compatibility,
+but new setups should use `KASTOR_*`.
 
 Important values:
 
 ```text
-KASTOR_ALLOWED_ROOTS=/absolute/path/to/your/projects
-KASTOR_PUBLIC_BASE_URL=https://your-tunnel-host.example.com
+KASTOR_ALLOWED_ROOTS=/absolute/path/to/your/project
+KASTOR_PUBLIC_BASE_URL=https://your-domain.example.com
 KASTOR_OAUTH_OWNER_TOKEN=change-me-to-a-long-random-secret
 ```
 
-`kastor init` asks for a permission preset:
+## Tunnel
 
-- `project`: current project only. Best first run.
-- `projects`: one or more project folders.
-- `power`: broader private-machine access. Do not use for public/shared setups.
+ChatGPT cannot reach `127.0.0.1` on your PC. You need a public HTTPS URL that
+forwards to Kastor.
 
-The MCP endpoint is:
+Common choices:
 
-```text
-https://your-tunnel-host.example.com/mcp
-```
+- ngrok
+- Cloudflare Tunnel
+- Tailscale Funnel
+- your own reverse proxy
 
-The local health check is:
-
-```text
-http://127.0.0.1:7676/healthz
-```
-
-## Windows Autostart
-
-The Windows helper scripts are optional. They start Kastor, start a fixed ngrok tunnel, and can optionally open either ChatGPT Desktop or a Chrome app-window fallback for ChatGPT web.
-
-Autostart refuses to install unless you provide a tunnel domain or public base URL:
-
-```powershell
-.\scripts\install-kastor-autostart.ps1 `
-  -NgrokDomain "your-domain.example.com"
-```
-
-Set a narrow allowed root before using the local starter:
-
-```powershell
-$env:KASTOR_ALLOWED_ROOTS = "C:\Users\you\Projects"
-$env:KASTOR_NGROK_DOMAIN = "your-domain.example.com"
-.\scripts\start-kastor-local.ps1
-```
-
-Do not start public/shared setups with `C:\`, `/`, or a whole home folder. If
-you need broader access for a private machine, set it explicitly in your own
-environment and keep that configuration out of published examples.
-
-### ChatGPT Web Fallback
-
-If the Windows ChatGPT Desktop app is broken or unavailable, keep Kastor running and use ChatGPT web as the MCP host. The MCP endpoint stays the same:
+Point the tunnel to:
 
 ```text
-https://your-tunnel-host.example.com/mcp
+http://127.0.0.1:7676
 ```
 
-For a dedicated Chrome app-window:
+Then run:
 
-```powershell
-.\scripts\start-kastor-and-chatgpt.ps1 `
-  -NgrokDomain "your-domain.example.com" `
-  -ChatGptClient chrome
+```bash
+KASTOR_PUBLIC_BASE_URL=https://your-domain.example.com node dist/cli.js serve
 ```
 
-This opens `https://chatgpt.com` in a dedicated Chrome profile. Connect Kastor from ChatGPT connector settings, approve the Kastor owner password, then refresh metadata after tool changes.
+See [docs/tunnels.md](docs/tunnels.md) for examples.
 
 ## Main Tools
 
-- `open_workspace`: open an allowed local project folder.
-- `read`, `write`, `edit`, `apply_patch`: inspect and change files.
-- `grep`, `glob`, `ls`, `size_top`: discover code and files.
-- `git_status`, `git_diff`, `git_stage`, `git_commit`, `git_publish`: inspect and prepare git work without automatic publishing.
-- `run_checks`, `self_test`: run package verification.
-- `task_plan`: persist objectives, checkpoints, review packets, resume packets, delegation packets, and summaries.
-- `rule_check`: run Codex-style safety gates around risky steps.
-- `computer_use`: operate visible Windows apps when normal file/code tools are not enough.
+- `open_workspace`: open an allowed project folder
+- `read`, `write`, `edit`, `apply_patch`: inspect and change files
+- `grep`, `glob`, `ls`, `size_top`: find code and files
+- `git_status`, `git_diff`, `git_stage`, `git_commit`, `git_publish`: inspect and prepare git work
+- `run_checks`, `self_test`: run verification
+- `task_plan`: save objectives, checkpoints, reviews, resume packets, and summaries
+- `rule_check`: check risky steps before doing them
+- `computer_use`: optional Windows UI control
+
+## Safety
+
+Treat an approved MCP client like a developer sitting at your PC.
+
+- Allow only folders you are willing to expose.
+- Review diffs before committing.
+- Do not commit `.env`, `~/.kastor/auth.json`, tunnel URLs, or logs.
+- Keep `KASTOR_ALLOWED_HOSTS` specific. Do not use `*` outside debugging.
+- Use a tunnel URL you control.
 
 ## Before Sharing
 
@@ -166,28 +161,30 @@ Run:
 npm run typecheck
 npm test
 npm run build
+npm audit --audit-level=high
 npm pack --dry-run
 ```
 
-Then check that no private data is tracked:
+Check for private data:
 
 ```bash
 git status --short
-git grep -n "your-real-token-or-domain"
+git grep -n "sk-\\|xoxb\\|ghp_\\|GHp"
 ```
 
 Also inspect:
 
 - `.env`
-- `~/.devspace/auth.json`
-- logs under `~/.devspace`
-- any tunnel URL files
+- `~/.kastor/auth.json`
+- logs under `~/.kastor`
+- tunnel URL files
 
 Those files should stay local and untracked.
 
-See [docs/publishing.md](docs/publishing.md) for the full public-release checklist.
-See [docs/os-setup.md](docs/os-setup.md) and [docs/tunnels.md](docs/tunnels.md) for platform and tunnel setup.
+## More Docs
 
-## Notes
-
-Kastor keeps DevSpace-compatible names and environment variable fallbacks where useful, but new setups should prefer `KASTOR_*` variables and the `kastor` command.
+- [docs/setup.md](docs/setup.md)
+- [docs/os-setup.md](docs/os-setup.md)
+- [docs/tunnels.md](docs/tunnels.md)
+- [docs/security.md](docs/security.md)
+- [docs/publishing.md](docs/publishing.md)
