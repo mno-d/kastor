@@ -44,8 +44,27 @@ try {
   const protectedBody = await protectedResource.json() as { resource_name?: string };
   assert.equal(protectedBody.resource_name, "Kastor");
 
+  const assetPreflight = await fetch(`${baseUrl}/mcp-app-assets/anything.js`, {
+    method: "OPTIONS",
+    headers: {
+      Origin: "https://chatgpt.com",
+      "Access-Control-Request-Method": "GET",
+    },
+  });
+  assert.equal(assetPreflight.status, 204);
+  assert.equal(assetPreflight.headers.get("access-control-allow-origin"), "*");
+
   const mcpWithoutAuth = await fetch(`${baseUrl}/mcp`, { method: "POST" });
   assert.equal(mcpWithoutAuth.status, 401);
+
+  const mcpUnknownSession = await fetch(`${baseUrl}/mcp`, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer invalid",
+      "mcp-session-id": "missing-session",
+    },
+  });
+  assert.equal(mcpUnknownSession.status, 401);
 } finally {
   await new Promise<void>((resolve, reject) => {
     httpServer.close((error) => error ? reject(error) : resolve());

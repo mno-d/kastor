@@ -118,6 +118,16 @@ function preToolUseGates(input: RuleCheckInput): RuleGate[] {
       });
     }
 
+    if (looksExternalOrInstall(command)) {
+      gates.push({
+        name: "external_or_install_guard",
+        decision: input.userApproved ? "warn" : "block",
+        detail: input.userApproved
+          ? "External, install, publish, or network-changing command was explicitly approved; keep scope narrow."
+          : "External sends, installs, publishes, and network-changing commands require explicit user approval.",
+      });
+    }
+
     if (looksBroadScan(command)) {
       gates.push({
         name: "broad_scan_guard",
@@ -243,6 +253,10 @@ function looksDestructive(command: string): boolean {
     || /\bRemove-Item\b[\s\S]*\b-Recurse\b/i.test(command)
     || /\bgit\s+(?:reset\s+--hard|checkout\s+--|clean\s+-fd)\b/i.test(command)
     || /\b(?:format|diskpart)\b/i.test(command);
+}
+
+function looksExternalOrInstall(command: string): boolean {
+  return /\b(?:git\s+push|gh\s+pr\s+create|gh\s+release|npm\s+(?:publish|install|i|add)|pnpm\s+(?:publish|add|install)|yarn\s+(?:publish|add|install)|pip\s+install|curl\b[\s\S]*(?:-X\s+POST|-F|--form|--upload-file|-T)|Invoke-RestMethod\b|Invoke-WebRequest\b|scp\b|rsync\b|ssh\b)\b/i.test(command);
 }
 
 function looksBroadScan(command: string): boolean {

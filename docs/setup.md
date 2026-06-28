@@ -129,10 +129,13 @@ Run:
 
 ```bash
 kastor doctor
+kastor doctor --json
 ```
 
 The doctor command reports the resolved config, Node version, Node ABI, platform,
 Git, Bash, public URL, allowed hosts, and SQLite native dependency status.
+Use `doctor --json` when you want to share the setup state with another person
+or an issue tracker.
 
 ## Running From A Local Checkout
 
@@ -154,3 +157,12 @@ https://your-tunnel-host.example.com/mcp
 ```
 
 After connecting, approve the Kastor owner password page, then refresh connector metadata whenever tools or descriptions change. If your ChatGPT plan or workspace does not expose custom MCP/App connectors, use another MCP-capable host or wait until the capability is available for that workspace.
+
+Quick connection check:
+
+1. Run `kastor doctor` and copy the `ChatGPT MCP endpoint`.
+2. Confirm the endpoint ends in `/mcp`.
+3. Start `kastor serve`.
+4. Connect ChatGPT to the endpoint and approve the Owner password.
+5. Ask ChatGPT to call `open_workspace` for one small test project.
+6. Ask it to read a harmless file, then run `self_test`.

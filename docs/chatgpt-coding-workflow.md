@@ -156,3 +156,7 @@ redirection, heredocs, `tee`, `sed -i`, or generated scripts.
 Kastor can edit local files inside configured roots. Deletions, large overwrites,
 uploads, external sends, installs, permission changes, payments, and publishing
 should be approved in the same turn before they happen.
+
+For shell commands, Kastor also enforces this in code: commands that look like
+installs, publishes, external sends, or destructive operations are blocked
+unless the host passes `userApproved=true` after same-turn user approval.

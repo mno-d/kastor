@@ -32,6 +32,22 @@ try {
   }, { cwd: root, root });
   assert.equal(safeShell.decision, "allow");
 
+  const npmInstall = await ruleCheck({
+    event: "PreToolUse",
+    toolName: "run_shell",
+    command: "npm install left-pad",
+  }, { cwd: root, root });
+  assert.equal(npmInstall.decision, "block");
+  assert.equal(npmInstall.gates.some((gate) => gate.name === "external_or_install_guard"), true);
+
+  const approvedPublish = await ruleCheck({
+    event: "PreToolUse",
+    toolName: "run_shell",
+    command: "npm publish",
+    userApproved: true,
+  }, { cwd: root, root });
+  assert.equal(approvedPublish.decision, "warn");
+
   const secretPrompt = await ruleCheck({
     event: "UserPromptSubmit",
     summary: "use sk-abcdefghijklmnopqrstuvwxyz123456",

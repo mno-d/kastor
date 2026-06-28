@@ -23,6 +23,7 @@ const SECRET_PATTERN = /(sk-[A-Za-z0-9_-]{20,}|sk-or-v1-[A-Za-z0-9_-]{20,}|ghp_[
 const SECRET_ALLOWLIST = [
   "src/rule-check.ts",
   "src/rule-check.test.ts",
+  "src/public-check.test.ts",
   "README.md",
   "docs/publishing.md",
   "docs/security.ja.md",

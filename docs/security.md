@@ -37,6 +37,8 @@ shared installs should never default to whole-PC access.
 
 Require explicit approval before deletion, large overwrites, uploads, external
 sends, installs, payments, permission changes, or publishing.
+The shell tool also enforces this in code and blocks risky-looking commands
+unless same-turn user approval is represented by `userApproved=true`.
 
 ## Owner Password
 

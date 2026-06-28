@@ -120,9 +120,11 @@ Owner passwordは初期設定時に表示され、次のファイルにも保存
 
 ```bash
 kastor doctor
+kastor doctor --json
 ```
 
 Node、Git、Bash、公開URL、許可ホスト、SQLite依存関係などを確認できます。
+`doctor --json`は、ほかの人に状態を見てもらう時に便利です。
 
 公開前に、よくある事故も確認します。
 
@@ -143,3 +145,12 @@ https://your-tunnel-host.example.com/mcp
 接続後、KastorのOwner password画面で承認します。ツール説明を更新した場合は、ChatGPT側でコネクタの情報を更新してください。
 
 もしChatGPTのプランやワークスペースにカスタムMCP接続が出ていない場合、そのアカウントではまだ使えません。その場合は、別のMCP対応クライアントで使うか、ChatGPT側の対応を待つ必要があります。
+
+接続確認の順番:
+
+1. `kastor doctor`を実行し、`ChatGPT MCP endpoint`を見る
+2. URLが`/mcp`で終わっていることを確認する
+3. `kastor serve`を起動する
+4. ChatGPT側にURLを登録し、Owner passwordで承認する
+5. 小さいテスト用フォルダで`open_workspace`を呼ばせる
+6. 害のないファイルを読ませてから、`self_test`を実行させる

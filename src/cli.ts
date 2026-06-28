@@ -19,6 +19,42 @@ import { expandHomePath } from "./roots.js";
 
 type Command = "serve" | "init" | "doctor" | "setup-guide" | "public-check" | "config" | "help";
 type PermissionPreset = "project" | "projects" | "power";
+interface DoctorReport {
+  files: {
+    dir: string;
+    configExists: boolean;
+    configPath: string;
+    authExists: boolean;
+    authPath: string;
+  };
+  runtime: {
+    node: string;
+    nodeStatus: string;
+    nodeAbi: string;
+    platform: NodeJS.Platform;
+    arch: string;
+    git: string;
+    bash: string;
+    sqlite: string;
+  };
+  configured: {
+    ok: true;
+    localMcpUrl: string;
+    publicMcpUrl: string;
+    allowedRoots: string[];
+    allowedHosts: string[];
+    permissionPreset: string;
+    filesystemScope: string;
+    publicUrlStatus: string;
+    chatGptMcpEndpoint: string;
+    ownerApproval: string;
+  } | {
+    ok: false;
+    error: string;
+  };
+  nextSetupChecks: string[];
+}
+
 const require = createRequire(import.meta.url);
 const SUPPORTED_NODE_RANGE = ">=20.12 <27";
 
@@ -37,7 +73,7 @@ async function main(argv: string[]): Promise<void> {
       await runInit({ force: args.includes("--force") });
       return;
     case "doctor":
-      await runDoctor();
+      await runDoctor({ json: args.includes("--json") });
       return;
     case "setup-guide":
       printSetupGuide();
@@ -209,38 +245,95 @@ async function serve(): Promise<void> {
   process.once("SIGTERM", shutdown);
 }
 
-async function runDoctor(): Promise<void> {
-  const files = loadDevspaceFiles();
+async function runDoctor({ json }: { json: boolean }): Promise<void> {
+  const report = collectDoctorReport();
+  if (json) {
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
+  const files = report.files;
+  const runtime = report.runtime;
+  const configured = report.configured;
+
   console.log(`Config dir: ${files.dir}`);
   console.log(`Config file: ${files.configExists ? files.configPath : "missing"}`);
   console.log(`Auth file: ${files.authExists ? files.authPath : "missing"}`);
-  console.log(`Node: ${process.version} (${nodeVersionStatus()})`);
-  console.log(`Node ABI: ${process.versions.modules}`);
-  console.log(`Platform: ${process.platform} ${process.arch}`);
-  console.log(`Git: ${checkGitAvailable()}`);
-  console.log(`Bash shell: ${checkBashShell()}`);
-  console.log(`SQLite native dependency: ${checkSqliteNative()}`);
+  console.log(`Node: ${runtime.node} (${runtime.nodeStatus})`);
+  console.log(`Node ABI: ${runtime.nodeAbi}`);
+  console.log(`Platform: ${runtime.platform} ${runtime.arch}`);
+  console.log(`Git: ${runtime.git}`);
+  console.log(`Bash shell: ${runtime.bash}`);
+  console.log(`SQLite native dependency: ${runtime.sqlite}`);
 
-  try {
-    const config = loadConfig();
-    console.log(`Local MCP URL: http://${config.host}:${config.port}/mcp`);
-    console.log(`Public MCP URL: ${new URL("/mcp", config.publicBaseUrl).toString()}`);
-    console.log(`Allowed roots: ${config.allowedRoots.join(", ")}`);
-    console.log(`Allowed hosts: ${config.allowedHosts.join(", ")}`);
-    console.log(`Permission preset: ${files.config.permissionPreset ?? "not recorded"}`);
-    console.log(`Filesystem scope: ${filesystemScopeStatus(config.allowedRoots)}`);
-    console.log(`Public URL status: ${publicUrlStatus(config.publicBaseUrl)}`);
-    console.log(`ChatGPT MCP endpoint: ${new URL("/mcp", config.publicBaseUrl).toString()}`);
-    console.log(`Owner approval: ${files.authExists ? "ready" : "missing auth.json; run kastor init"}`);
-  } catch (error) {
-    console.log(`Config status: ${error instanceof Error ? error.message : String(error)}`);
+  if (configured.ok) {
+    console.log(`Local MCP URL: ${configured.localMcpUrl}`);
+    console.log(`Public MCP URL: ${configured.publicMcpUrl}`);
+    console.log(`Allowed roots: ${configured.allowedRoots.join(", ")}`);
+    console.log(`Allowed hosts: ${configured.allowedHosts.join(", ")}`);
+    console.log(`Permission preset: ${configured.permissionPreset}`);
+    console.log(`Filesystem scope: ${configured.filesystemScope}`);
+    console.log(`Public URL status: ${configured.publicUrlStatus}`);
+    console.log(`ChatGPT MCP endpoint: ${configured.chatGptMcpEndpoint}`);
+    console.log(`Owner approval: ${configured.ownerApproval}`);
+  } else {
+    console.log(`Config status: ${configured.error}`);
   }
 
   console.log("");
   console.log("Next setup checks:");
-  for (const line of setupChecklist()) {
+  for (const line of report.nextSetupChecks) {
     console.log(`- ${line}`);
   }
+}
+
+function collectDoctorReport(): DoctorReport {
+  const files = loadDevspaceFiles();
+  let configured: DoctorReport["configured"];
+
+  try {
+    const config = loadConfig();
+    const publicMcpUrl = new URL("/mcp", config.publicBaseUrl).toString();
+    configured = {
+      ok: true,
+      localMcpUrl: `http://${config.host}:${config.port}/mcp`,
+      publicMcpUrl,
+      allowedRoots: config.allowedRoots,
+      allowedHosts: config.allowedHosts,
+      permissionPreset: files.config.permissionPreset ?? "not recorded",
+      filesystemScope: filesystemScopeStatus(config.allowedRoots),
+      publicUrlStatus: publicUrlStatus(config.publicBaseUrl),
+      chatGptMcpEndpoint: publicMcpUrl,
+      ownerApproval: files.authExists ? "ready" : "missing auth.json; run kastor init",
+    };
+  } catch (error) {
+    configured = {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+
+  return {
+    files: {
+      dir: files.dir,
+      configExists: files.configExists,
+      configPath: files.configPath,
+      authExists: files.authExists,
+      authPath: files.authPath,
+    },
+    runtime: {
+      node: process.version,
+      nodeStatus: nodeVersionStatus(),
+      nodeAbi: process.versions.modules,
+      platform: process.platform,
+      arch: process.arch,
+      git: checkGitAvailable(),
+      bash: checkBashShell(),
+      sqlite: checkSqliteNative(),
+    },
+    configured,
+    nextSetupChecks: setupChecklist(),
+  };
 }
 
 function runPublicCheck(): void {
@@ -301,6 +394,7 @@ function printHelp(): void {
       "  kastor serve           Start the server",
       "  kastor init            Create or update ~/.kastor/config.json and auth.json",
       "  kastor doctor          Show config, runtime, and native dependency status",
+      "  kastor doctor --json   Print the same diagnostics as JSON for support/debugging",
       "  kastor setup-guide     Print OS, tunnel, and permission setup guidance",
       "  kastor public-check    Check for common public-sharing mistakes",
       "  kastor config get      Print persisted config",

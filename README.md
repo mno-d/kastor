@@ -49,6 +49,7 @@ npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.3/mnod-kas
 kastor setup-guide
 kastor init
 kastor doctor
+kastor doctor --json
 kastor serve
 ```
 
@@ -60,6 +61,7 @@ npm run build
 node dist/cli.js setup-guide
 node dist/cli.js init
 node dist/cli.js doctor
+node dist/cli.js doctor --json
 node dist/cli.js serve
 ```
 
@@ -186,6 +188,7 @@ npm test
 npm run build
 npm audit --audit-level=high
 kastor public-check
+kastor doctor --json
 npm pack --dry-run
 ```
 
