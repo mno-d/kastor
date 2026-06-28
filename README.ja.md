@@ -69,7 +69,7 @@ ChatGPTやClaudeが頭で、KastorがPC側の道具箱です。
 今の公開版はGitHub Releaseから入れます。
 
 ```bash
-npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.9/mnod-kastor-1.0.9.tgz
+npm install -g https://github.com/mno-d/kastor/releases/download/v1.0.10/mnod-kastor-1.0.10.tgz
 kastor setup-guide
 kastor init
 kastor doctor
